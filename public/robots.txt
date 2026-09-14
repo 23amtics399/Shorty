@@ -1,0 +1,24 @@
+# Shorty Robots.txt
+User-agent: *
+Allow: /
+Allow: /about
+Allow: /features
+Allow: /pricing
+Allow: /developers
+Allow: /help
+Allow: /privacy
+Allow: /terms
+Allow: /report
+
+# Disallow authenticated, admin, and API paths from crawler indexing
+Disallow: /dashboard
+Disallow: /dashboard/*
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /api/
+Disallow: /api/*
+
+# Short redirect links should not be spidered as content
+Disallow: /*?*
+
+Sitemap: https://shorty.sji.one/sitemap.xml
