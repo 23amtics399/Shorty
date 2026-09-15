@@ -142,7 +142,7 @@ export async function GET(
 ) {
   const { shortCode: code } = await params;
 
-  if (!code) {
+  if (!code || code.includes('/') || !/^[a-zA-Z0-9_-]{1,50}$/.test(code)) {
     return renderStatusResponse(
       request,
       404,

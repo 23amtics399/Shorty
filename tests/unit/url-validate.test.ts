@@ -23,9 +23,41 @@ describe('validateUrl', () => {
     expect(result.valid).toBe(true);
   });
 
-  // ── Invalid / empty ─────────────────────────────────────────────────────────
+  // ── Invalid / empty / non-string boundaries ───────────────────────────────
+  it('rejects undefined url', () => {
+    const res = validateUrl(undefined);
+    expect(res.valid).toBe(false);
+    expect(res.error).toBe('URL is required');
+  });
+
+  it('rejects null url', () => {
+    const res = validateUrl(null);
+    expect(res.valid).toBe(false);
+    expect(res.error).toBe('URL is required');
+  });
+
+  it('rejects number url', () => {
+    const res = validateUrl(12345 as unknown as string);
+    expect(res.valid).toBe(false);
+    expect(res.error).toBe('URL is required');
+  });
+
+  it('rejects object url', () => {
+    const res = validateUrl({ foo: 'bar' } as unknown as string);
+    expect(res.valid).toBe(false);
+    expect(res.error).toBe('URL is required');
+  });
+
   it('rejects empty string', () => {
-    expect(validateUrl('').valid).toBe(false);
+    const res = validateUrl('');
+    expect(res.valid).toBe(false);
+    expect(res.error).toBe('URL is required');
+  });
+
+  it('rejects whitespace-only string', () => {
+    const res = validateUrl('   \t  \n ');
+    expect(res.valid).toBe(false);
+    expect(res.error).toBe('URL is required');
   });
 
   it('rejects non-URL string', () => {

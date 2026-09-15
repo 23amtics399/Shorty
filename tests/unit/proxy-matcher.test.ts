@@ -144,8 +144,9 @@ describe('src/proxy.ts — Route Segregation and Path Normalization Audit', () =
     for (const path of malformed) {
       mockFetch.mockReset();
       const req = new NextRequest(`https://shorty.sji.one${path}`);
-      await proxy(req);
+      const res = await proxy(req);
       expect(mockFetch).not.toHaveBeenCalled();
+      expect(res.status).toBe(404);
     }
   });
 

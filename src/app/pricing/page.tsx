@@ -3,6 +3,7 @@ import Link from 'next/link';
 export const metadata = {
   title: 'Pricing',
   description: 'Simple, transparent, 100% free URL shortening for everyone.',
+  alternates: { canonical: '/pricing' },
 };
 
 export default function PricingPage() {

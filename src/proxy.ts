@@ -79,9 +79,13 @@ export async function proxy(request: NextRequest, event?: NextFetchEvent) {
     return NextResponse.next();
   }
 
-  // 2. Reject multiple leading slashes (e.g. "///code") — do not normalize
-  if (pathname.startsWith('//')) {
-    return NextResponse.next();
+  // 2. Reject multiple leading/consecutive slashes (e.g. "///code", "//code") — return 404, never normalize
+  const rawPathname = request.url.replace(/^https?:\/\/[^/?#]+/, '').split('?')[0].split('#')[0];
+  if (pathname.startsWith('//') || rawPathname.startsWith('//') || /\/{2,}/.test(rawPathname)) {
+    return new NextResponse('Not Found', {
+      status: 404,
+      headers: { 'content-type': 'text/plain; charset=utf-8' },
+    });
   }
 
   // 3. Reject traversal attempts and encoded traversal

@@ -81,6 +81,7 @@ export interface CreateLinkResponse {
 }
 
 export interface UpdateLinkRequest {
+  url?: string;
   isActive?: boolean;
   expiresAt?: string | null;
 }

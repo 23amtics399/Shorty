@@ -39,6 +39,12 @@ export default function DashboardPage() {
   const [qrLink, setQrLink] = useState<{ url: string; code: string } | null>(null);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
+  // Edit link modal state
+  const [editingLink, setEditingLink] = useState<{ id: string; code: string; currentUrl: string } | null>(null);
+  const [editUrl, setEditUrl] = useState('');
+  const [editLoading, setEditLoading] = useState(false);
+  const [editError, setEditError] = useState<string | null>(null);
+
   const fetchLinks = useCallback(async () => {
     try {
       const query = search ? `?search=${encodeURIComponent(search)}` : '';
@@ -141,6 +147,36 @@ export default function DashboardPage() {
       }
     } catch (err) {
       console.error('Failed to delete link', err);
+    }
+  };
+
+  const handleUpdateUrl = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingLink || !editUrl.trim()) return;
+
+    setEditLoading(true);
+    setEditError(null);
+
+    try {
+      const res = await fetch(`/api/v1/links/${editingLink.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: editUrl.trim() }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to update destination URL');
+      }
+
+      setLinks((prev) =>
+        prev.map((l) => (l._id === editingLink.id ? { ...l, originalUrl: editUrl.trim() } : l))
+      );
+      setEditingLink(null);
+    } catch (err: unknown) {
+      setEditError(err instanceof Error ? err.message : 'Update failed');
+    } finally {
+      setEditLoading(false);
     }
   };
 
@@ -478,6 +514,17 @@ export default function DashboardPage() {
                       <div style={{ display: 'inline-flex', gap: '0.375rem' }}>
                         <button
                           className="btn btn-secondary btn-sm"
+                          onClick={() => {
+                            setEditingLink({ id: link._id, code: link.code, currentUrl: link.originalUrl });
+                            setEditUrl(link.originalUrl);
+                            setEditError(null);
+                          }}
+                          title="Edit destination URL"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="btn btn-secondary btn-sm"
                           onClick={() =>
                             setQrLink({
                               url: `${typeof window !== 'undefined' ? window.location.origin : ''}/${link.code}`,
@@ -523,6 +570,84 @@ export default function DashboardPage() {
           code={qrLink.code}
           onClose={() => setQrLink(null)}
         />
+      )}
+
+      {/* Edit Destination URL Modal */}
+      {editingLink && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.75)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+            padding: '1rem',
+          }}
+          onClick={() => setEditingLink(null)}
+        >
+          <div
+            style={{
+              background: 'var(--surface-1)',
+              border: '1px solid var(--border-subtle)',
+              borderRadius: '16px',
+              padding: '2rem',
+              maxWidth: '520px',
+              width: '100%',
+              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4)',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', fontWeight: 600 }}>
+              Edit Destination URL
+            </h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: '1.25rem' }}>
+              Updating destination for short code <code style={{ color: 'var(--brand-secondary)' }}>/{editingLink.code}</code>. The short link will immediately redirect to the new URL.
+            </p>
+
+            {editError && (
+              <div style={{ padding: '0.75rem', borderRadius: '8px', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', fontSize: '0.875rem', marginBottom: '1rem' }}>
+                {editError}
+              </div>
+            )}
+
+            <form onSubmit={handleUpdateUrl}>
+              <div style={{ marginBottom: '1.25rem' }}>
+                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>
+                  Destination URL
+                </label>
+                <input
+                  type="url"
+                  className="input"
+                  style={{ width: '100%' }}
+                  value={editUrl}
+                  onChange={(e) => setEditUrl(e.target.value)}
+                  placeholder="https://example.com/new-target"
+                  required
+                />
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setEditingLink(null)}
+                  disabled={editLoading}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={editLoading || !editUrl.trim()}
+                >
+                  {editLoading ? 'Saving...' : 'Save Changes'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
     </div>
   );

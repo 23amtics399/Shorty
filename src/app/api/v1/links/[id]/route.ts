@@ -13,6 +13,7 @@ import { invalidateCachedLink } from '@/lib/redis/cache';
 import { getPendingClicks, flushPendingClicks, getAndResetPendingClicks } from '@/lib/redis/clicks';
 import { toErrorResponse, notFound, badRequest } from '@/lib/errors';
 import { AUTHENTICATED_MAX_LINK_LIFETIME_DAYS } from '@/lib/config';
+import { validateUrl } from '@/lib/url/validate';
 import type { UpdateLinkRequest } from '@/types';
 
 export const runtime = 'nodejs';
@@ -70,6 +71,15 @@ export async function PUT(
     }
 
     const updates: Record<string, unknown> = {};
+
+    // Destination URL update
+    if ('url' in body && body.url !== undefined) {
+      const urlResult = validateUrl(body.url);
+      if (!urlResult.valid) {
+        throw badRequest(urlResult.error ?? 'Invalid URL');
+      }
+      updates.originalUrl = urlResult.normalizedUrl!;
+    }
 
     if (typeof body.isActive === 'boolean') {
       updates.isActive = body.isActive;

@@ -52,6 +52,10 @@ vi.mock('@/lib/auth/config', () => ({
   auth: vi.fn(),
 }));
 
+vi.mock('@/lib/redis/clicks', () => ({
+  enrichLinksWithPendingClicks: vi.fn((links) => Promise.resolve(links)),
+}));
+
 describe('Integration — Admin Authorization Enforcement', () => {
   beforeEach(() => {
     vi.clearAllMocks();

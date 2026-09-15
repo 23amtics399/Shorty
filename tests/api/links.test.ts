@@ -46,6 +46,44 @@ describe('POST /api/v1/links', () => {
     expect(data.error).toMatch(/Invalid JSON body/);
   });
 
+  it('rejects missing url field with 400 Bad Request', async () => {
+    const req = new NextRequest('https://shorty.sji.one/api/v1/links', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({}),
+    });
+
+    const res = await POST(req);
+    expect(res.status).toBe(400);
+    const data = await res.json();
+    expect(data.error).toBe('URL is required');
+    expect(data.code).toBe('BAD_REQUEST');
+  });
+
+  it('rejects null, number, object, empty, and whitespace URLs with 400 Bad Request', async () => {
+    const invalidPayloads = [
+      { url: null },
+      { url: 12345 },
+      { url: { nested: 'url' } },
+      { url: '' },
+      { url: '   \t  ' },
+    ];
+
+    for (const payload of invalidPayloads) {
+      const req = new NextRequest('https://shorty.sji.one/api/v1/links', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const res = await POST(req);
+      expect(res.status).toBe(400);
+      const data = await res.json();
+      expect(data.error).toBe('URL is required');
+      expect(data.code).toBe('BAD_REQUEST');
+    }
+  });
+
   it('rejects invalid URL schemes (javascript:, file:)', async () => {
     const req = new NextRequest('https://shorty.sji.one/api/v1/links', {
       method: 'POST',

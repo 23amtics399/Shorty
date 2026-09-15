@@ -19,6 +19,11 @@ vi.mock('@/lib/redis/cache', () => ({
   setCachedLink: vi.fn().mockResolvedValue(undefined),
 }));
 
+vi.mock('@/lib/redis/clicks', () => ({
+  getAndResetPendingClicks: vi.fn().mockResolvedValue(0),
+  restorePendingClicks: vi.fn().mockResolvedValue(undefined),
+}));
+
 describe('GET /[shortCode] Route Handler — HTTP Semantics Audit', () => {
   beforeEach(() => {
     vi.clearAllMocks();

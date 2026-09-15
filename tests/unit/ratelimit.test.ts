@@ -16,7 +16,15 @@ vi.mock('@/lib/redis/client', () => ({
 }));
 
 describe('getClientIp', () => {
-  it('extracts first IP from comma-separated x-forwarded-for', () => {
+  it('prioritizes cf-connecting-ip when routed through Cloudflare', () => {
+    const headers = new Headers();
+    headers.set('cf-connecting-ip', '198.51.100.99');
+    headers.set('x-forwarded-for', '172.69.176.13, 198.51.100.99');
+    headers.set('x-real-ip', '172.69.176.13');
+    expect(getClientIp(headers)).toBe('198.51.100.99');
+  });
+
+  it('extracts first IP from comma-separated x-forwarded-for when cf-connecting-ip is missing', () => {
     const headers = new Headers();
     headers.set('x-forwarded-for', '203.0.113.195, 70.41.3.18, 150.172.238.178');
     expect(getClientIp(headers)).toBe('203.0.113.195');
@@ -28,7 +36,7 @@ describe('getClientIp', () => {
     expect(getClientIp(headers)).toBe('198.51.100.1');
   });
 
-  it('falls back to x-real-ip if x-forwarded-for is missing', () => {
+  it('falls back to x-real-ip if x-forwarded-for and cf-connecting-ip are missing', () => {
     const headers = new Headers();
     headers.set('x-real-ip', '198.51.100.2');
     expect(getClientIp(headers)).toBe('198.51.100.2');
@@ -96,6 +104,13 @@ describe('rateLimitAuth (Security Critical)', () => {
 
     // Must fail closed with service unavailable — never allow un-rate-limited brute force attacks
     await expect(rateLimitAuth('1.2.3.4')).rejects.toThrow(/temporarily unavailable/);
+  });
+
+  it('throws AppError(429) when auth attempts exceed limit', async () => {
+    vi.mocked(redis.incr).mockResolvedValue(11);
+    vi.mocked(redis.ttl).mockResolvedValue(1800);
+
+    await expect(rateLimitAuth('1.2.3.4')).rejects.toThrow(/Too many authentication attempts/);
   });
 });
 

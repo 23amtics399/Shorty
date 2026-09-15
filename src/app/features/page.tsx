@@ -3,6 +3,7 @@ import Link from 'next/link';
 export const metadata = {
   title: 'Features',
   description: 'Explore the high-performance link shortening, analytics, and QR code features of Shorty.',
+  alternates: { canonical: '/features' },
 };
 
 export default function FeaturesPage() {

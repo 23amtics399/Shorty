@@ -1,6 +1,7 @@
 export const metadata = {
   title: 'API Documentation',
   description: 'Shorty REST API documentation for developers.',
+  alternates: { canonical: '/developers' },
 };
 
 export default function DevelopersPage() {

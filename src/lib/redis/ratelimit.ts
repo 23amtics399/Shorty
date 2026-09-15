@@ -62,6 +62,7 @@ interface RateLimitResult {
   allowed: boolean;
   remaining: number;
   resetAt: Date;
+  isOutage?: boolean;
 }
 
 // ─── Emergency In-Memory Fallback Store ─────────────────────────────────────────
@@ -138,6 +139,7 @@ async function checkRateLimit(
         allowed: false,
         remaining: 0,
         resetAt: new Date(Date.now() + 60 * 1000),
+        isOutage: true,
       };
     }
 
@@ -213,9 +215,13 @@ export async function rateLimitAuth(ip: string): Promise<void> {
   );
 
   if (!result.allowed) {
-    // If Redis is unreachable, fail closed with service unavailable to protect accounts
-    throw serviceUnavailable(
-      'Authentication rate-limiting service is temporarily unavailable. Please try again shortly.',
+    if (result.isOutage) {
+      throw serviceUnavailable(
+        'Authentication rate-limiting service is temporarily unavailable. Please try again shortly.',
+      );
+    }
+    throw tooManyRequests(
+      'Too many authentication attempts. Please try again later.',
     );
   }
 }
@@ -241,12 +247,42 @@ export async function rateLimitApi(ip: string): Promise<void> {
 
 /**
  * Extract client IP from Next.js request headers.
- * Correctly extracts first public client from comma-separated x-forwarded-for.
+ *
+ * Trust Hierarchy:
+ * 1. 'cf-connecting-ip': Primary trusted client IP when routed through Cloudflare edge.
+ * 2. 'x-forwarded-for': Fallback to the first client IP in comma-separated list when proxying.
+ * 3. 'x-real-ip': Direct upstream reverse proxy client IP.
+ * 4. 'unknown': Fallback if no identifying header is present.
+ *
+ * Trust Assumption & Security Boundaries:
+ * - Production traffic is configured to route through Cloudflare (e.g. shorty.sji.one).
+ * - Cloudflare overwrites any client-supplied 'cf-connecting-ip' header with the actual
+ *   connecting socket address, making 'cf-connecting-ip' the most trustworthy client identifier
+ *   along the Cloudflare proxy path.
+ * - Caveat on Direct Origin Access: If a client bypasses Cloudflare and accesses the origin
+ *   directly (e.g., via *.vercel.app directly, without Cloudflare Authenticated Origin Pulls or
+ *   firewall restrictions), client-supplied forwarding headers ('x-forwarded-for', 'cf-connecting-ip')
+ *   could be spoofed. Therefore, we prioritize 'cf-connecting-ip' for legitimate Cloudflare traffic,
+ *   fall back cleanly, and document that complete origin isolation requires Cloudflare proxy enforcement.
  */
 export function getClientIp(headers: Headers): string {
+  const cfConnectingIp = headers.get('cf-connecting-ip');
+  if (cfConnectingIp) {
+    const trimmed = cfConnectingIp.trim();
+    if (trimmed) return trimmed;
+  }
+
   const forwarded = headers.get('x-forwarded-for');
   if (forwarded) {
-    return forwarded.split(',')[0].trim();
+    const first = forwarded.split(',')[0].trim();
+    if (first) return first;
   }
-  return headers.get('x-real-ip') ?? 'unknown';
+
+  const realIp = headers.get('x-real-ip');
+  if (realIp) {
+    const trimmed = realIp.trim();
+    if (trimmed) return trimmed;
+  }
+
+  return 'unknown';
 }

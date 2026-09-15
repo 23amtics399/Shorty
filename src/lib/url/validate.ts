@@ -80,7 +80,11 @@ function isInternalHostname(hostname: string): boolean {
   return false;
 }
 
-export function validateUrl(rawUrl: string): UrlValidationResult {
+export function validateUrl(rawUrl: unknown): UrlValidationResult {
+  if (rawUrl === undefined || rawUrl === null || typeof rawUrl !== 'string') {
+    return { valid: false, error: 'URL is required' };
+  }
+
   const trimmed = rawUrl.trim();
 
   if (!trimmed) {

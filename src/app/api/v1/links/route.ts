@@ -46,6 +46,10 @@ export async function POST(request: NextRequest) {
       throw badRequest('Invalid JSON body');
     }
 
+    if (!body || typeof body !== 'object') {
+      throw badRequest('Invalid JSON body');
+    }
+
     const { url, customAlias, expiresAt: expiresAtRaw } = body;
 
     // URL validation
