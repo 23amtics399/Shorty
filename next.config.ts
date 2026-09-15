@@ -9,7 +9,6 @@ const nextConfig: NextConfig = {
 
   // Prevent automatic 308 redirect normalization of multi-slashes before proxy (Next.js 16 convention)
   skipProxyUrlNormalize: true,
-  skipMiddlewareUrlNormalize: true,
 
   // Security headers
   async headers() {
