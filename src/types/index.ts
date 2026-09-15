@@ -74,6 +74,7 @@ export interface CreateLinkRequest {
 }
 
 export interface CreateLinkResponse {
+  id?: string;
   code: string;
   shortUrl: string;
   originalUrl: string;

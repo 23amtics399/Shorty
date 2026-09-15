@@ -135,6 +135,7 @@ export async function POST(request: NextRequest) {
       });
 
       const response: CreateLinkResponse = {
+        id: link._id ? link._id.toString() : undefined,
         code: link.code,
         shortUrl: `${APP_URL}/${link.code}`,
         originalUrl: link.originalUrl,

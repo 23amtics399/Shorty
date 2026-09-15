@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
   // Disable x-powered-by header in responses
   poweredByHeader: false,
 
+  // Prevent automatic 308 redirect normalization of multi-slashes before proxy (Next.js 16 convention)
+  skipProxyUrlNormalize: true,
+  skipMiddlewareUrlNormalize: true,
+
   // Security headers
   async headers() {
     return [
