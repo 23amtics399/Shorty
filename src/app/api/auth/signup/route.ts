@@ -54,8 +54,8 @@ export async function POST(request: NextRequest) {
     }
 
     const passwordHash = await bcrypt.hash(password, 12);
-    const role =
-      ADMIN_EMAIL && email === ADMIN_EMAIL.toLowerCase() ? 'admin' : 'user';
+    const configuredAdmin = (process.env.ADMIN_EMAIL || ADMIN_EMAIL || '').trim().toLowerCase();
+    const role = configuredAdmin && email === configuredAdmin ? 'admin' : 'user';
 
     const user = await User.create({
       email,

@@ -36,12 +36,16 @@ export async function requireAdmin() {
     throw unauthorized();
   }
 
-  const adminEmail = process.env.ADMIN_EMAIL || ADMIN_EMAIL;
-  if (!adminEmail) {
-    throw forbidden('Admin access is not configured on this server');
-  }
+  const adminEmail = (process.env.ADMIN_EMAIL || ADMIN_EMAIL || '').trim().toLowerCase();
+  const userEmail = session.user.email.trim().toLowerCase();
+  const userRole = (session.user as { role?: string })?.role;
 
-  if (session.user.email.toLowerCase() !== adminEmail.toLowerCase()) {
+  const isMatch = (adminEmail && userEmail === adminEmail) || userRole === 'admin';
+
+  if (!isMatch) {
+    if (!adminEmail && userRole !== 'admin') {
+      throw forbidden('Admin access is not configured on this server');
+    }
     throw forbidden();
   }
 
@@ -72,8 +76,10 @@ export async function requireOwnerOrAdmin(ownerId: string | null) {
   }
 
   const isOwner = ownerId !== null && session.user.id === ownerId;
-  const adminMatch =
-    ADMIN_EMAIL && session.user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+  const adminEmail = (process.env.ADMIN_EMAIL || ADMIN_EMAIL || '').trim().toLowerCase();
+  const userEmail = session.user.email.trim().toLowerCase();
+  const userRole = (session.user as { role?: string })?.role;
+  const adminMatch = (adminEmail && userEmail === adminEmail) || userRole === 'admin';
 
   if (!isOwner && !adminMatch) {
     throw forbidden();

@@ -18,11 +18,14 @@ export default async function AdminLayout({
     redirect('/login?callbackUrl=/admin');
   }
 
-  const isAdmin =
-    ADMIN_EMAIL &&
-    session.user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+  const adminEmail = (process.env.ADMIN_EMAIL || ADMIN_EMAIL || '').trim().toLowerCase();
+  const userEmail = session.user.email.trim().toLowerCase();
+  const userRole = (session.user as { role?: string })?.role;
 
-  if (!isAdmin) {
+  const isAuthorized =
+    (adminEmail && userEmail === adminEmail) || userRole === 'admin';
+
+  if (!isAuthorized) {
     redirect('/dashboard');
   }
 

@@ -5,10 +5,12 @@ import styles from './Header.module.css';
 
 export async function Header() {
   const session = await auth();
-  const isAdmin =
-    session?.user?.email &&
-    ADMIN_EMAIL &&
-    session.user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+  const adminEmail = (process.env.ADMIN_EMAIL || ADMIN_EMAIL || '').trim().toLowerCase();
+  const userEmail = session?.user?.email?.trim().toLowerCase();
+  const userRole = (session?.user as { role?: string })?.role;
+  const isAdmin = Boolean(
+    userEmail && ((adminEmail && userEmail === adminEmail) || userRole === 'admin')
+  );
 
   return (
     <header className="nav" role="banner">
