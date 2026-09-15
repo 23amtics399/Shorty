@@ -391,7 +391,7 @@ async function runAudit() {
 
   return {
     malformedResults,
-    loginRateLimit: { triggered: rateLimitTriggered, attempt: triggerAttempt, status: rlStatus, body: rlBody },
+    loginRateLimit: { triggered: rateLimitTriggered, status: rlStatus, body: rlBody },
     regions: { vercelId: xVercelId, upstashHost, upstashIp, mongoHost, mongoIp },
     canonicalResults,
     destinationEdit: { success: loc2 === updatedDest, initial: loc1, updated: loc2 },
