@@ -402,6 +402,12 @@ code, kbd, samp {
   border-bottom: 1px solid var(--border-subtle);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+}
+
+.nav .container {
+  height: 100%;
 }
 
 .nav-inner {
@@ -420,6 +426,7 @@ code, kbd, samp {
   font-weight: 800;
   letter-spacing: -0.04em;
   text-decoration: none;
+  line-height: 1;
 }
 
 .nav-logo span {
@@ -434,6 +441,8 @@ code, kbd, samp {
   align-items: center;
   gap: var(--space-2);
   list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .nav-link {
