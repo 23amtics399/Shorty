@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="brand-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c084fc" />
+      <stop offset="35%" stop-color="#8b5cf6" />
+      <stop offset="70%" stop-color="#6366f1" />
+      <stop offset="100%" stop-color="#38bdf8" />
+    </linearGradient>
+
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#181a26" />
+      <stop offset="100%" stop-color="#0a0c12" />
+    </linearGradient>
+
+    <radialGradient id="ambient-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.32" />
+      <stop offset="60%" stop-color="#6366f1" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#6366f1" stop-opacity="0" />
+    </radialGradient>
+
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#6366f1" flood-opacity="0.4" />
+    </filter>
+  </defs>
+
+  <rect width="512" height="512" rx="116" fill="url(#bg-grad)" stroke="#262b3d" stroke-width="8" />
+       <circle cx="256" cy="256" r="190" fill="url(#ambient-glow)" />
+
+  <!-- Shorty S-Link Monogram -->
+  <g filter="url(#shadow)">
+    <!-- Top-Right Link Terminal Loop -->
+    <path
+      d="M 200 312 
+         L 312 200 
+         A 64 64 0 0 1 376 264 
+         A 64 64 0 0 1 312 328 
+         L 260 328"
+      fill="none"
+      stroke="url(#brand-grad)"
+      stroke-width="52"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+
+    <!-- Bottom-Left Link Terminal Loop -->
+    <path
+      d="M 312 200 
+         L 200 312 
+         A 64 64 0 0 1 136 248 
+         A 64 64 0 0 1 200 184 
+         L 252 184"
+      fill="none"
+      stroke="url(#brand-grad)"
+      stroke-width="52"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+
+    <!-- Diagonal Speed Accent -->
+    <line
+      x1="220"
+      y1="292"
+      x2="292"
+      y2="220"
+      stroke="#ffffff"
+      stroke-width="12"
+      stroke-linecap="round"
+      opacity="0.85"
+    />
+  </g>
+</svg>

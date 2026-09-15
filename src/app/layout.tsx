@@ -9,8 +9,13 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+const APP_URL =
+  process.env.NEXT_PUBLIC_APP_URL && !process.env.NEXT_PUBLIC_APP_URL.includes('localhost')
+    ? process.env.NEXT_PUBLIC_APP_URL
+    : 'https://shorty.sji.one';
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'),
+  metadataBase: new URL(APP_URL),
   alternates: {
     canonical: '/',
   },
@@ -19,10 +24,24 @@ export const metadata: Metadata = {
     template: '%s | Shorty',
   },
   description:
-    'Shorty makes your long URLs short, trackable, and shareable. Create custom short links with analytics, QR codes, and expiration control.',
-  keywords: ['url shortener', 'link shortener', 'short link', 'qr code', 'link analytics'],
+    'Short links. Simple. Fast. Privacy-first URL shortener with real-time analytics, custom aliases, and QR codes.',
+  keywords: ['url shortener', 'link shortener', 'short link', 'qr code', 'link analytics', 'custom alias'],
   authors: [{ name: 'Shorty' }],
   creator: 'Shorty',
+  publisher: 'Shorty',
+  manifest: '/site.webmanifest',
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+    shortcut: '/favicon.ico',
+  },
   openGraph: {
     type: 'website',
     locale: 'en_US',
@@ -30,20 +49,23 @@ export const metadata: Metadata = {
     siteName: 'Shorty',
     title: 'Shorty — Fast, Free URL Shortener',
     description:
-      'Create short, trackable links in seconds. Custom aliases, QR codes, and expiration control.',
+      'Short links. Simple. Fast. Privacy-first URL shortener with real-time analytics, custom aliases, and QR codes.',
     images: [
       {
-        url: '/og-image.png',
+        url: 'https://shorty.sji.one/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Shorty — URL Shortener',
+        alt: 'Shorty — Fast, Free URL Shortener',
+        type: 'image/png',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Shorty — Fast, Free URL Shortener',
-    description: 'Create short, trackable links in seconds.',
+    description:
+      'Short links. Simple. Fast. Privacy-first URL shortener with real-time analytics, custom aliases, and QR codes.',
+    images: ['https://shorty.sji.one/twitter-image.png'],
   },
   robots: {
     index: true,
@@ -52,10 +74,40 @@ export const metadata: Metadata = {
   },
 };
 
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': 'https://shorty.sji.one/#website',
+      url: 'https://shorty.sji.one',
+      name: 'Shorty',
+      description: 'Fast, privacy-first URL shortener with custom links and real-time analytics.',
+    },
+    {
+      '@type': 'Organization',
+      '@id': 'https://shorty.sji.one/#organization',
+      name: 'Shorty',
+      url: 'https://shorty.sji.one',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://shorty.sji.one/icon-512.png',
+        width: 512,
+        height: 512,
+      },
+    },
+  ],
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head />
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body>
         <Header />
         <main>{children}</main>
