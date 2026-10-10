@@ -43,7 +43,10 @@ function renderStatusResponse(
       { error: message, code: errCode },
       {
         status,
-        headers: { 'cache-control': 'no-store, max-age=0' },
+        headers: {
+          'cache-control': 'no-store, max-age=0',
+          'x-robots-tag': 'noindex, nofollow',
+        },
       },
     );
   }
@@ -53,6 +56,7 @@ function renderStatusResponse(
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
   <title>${title} | Shorty</title>
   <style>
     :root {
@@ -132,6 +136,7 @@ function renderStatusResponse(
     headers: {
       'content-type': 'text/html; charset=utf-8',
       'cache-control': 'no-store, max-age=0',
+      'x-robots-tag': 'noindex, nofollow',
     },
   });
 }
