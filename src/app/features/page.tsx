@@ -1,9 +1,21 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Features',
   description: 'Explore the high-performance link shortening, analytics, and QR code features of Shorty.',
   alternates: { canonical: '/features' },
+  openGraph: {
+    title: 'Features',
+    description: 'Explore the high-performance link shortening, analytics, and QR code features of Shorty.',
+    url: 'https://shorty.sji.one/features',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Features',
+    description: 'Explore the high-performance link shortening, analytics, and QR code features of Shorty.',
+  },
 };
 
 export default function FeaturesPage() {

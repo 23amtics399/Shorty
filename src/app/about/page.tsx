@@ -1,8 +1,21 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'About Shorty',
   description: 'Learn about the mission, architecture, and reliability of Shorty URL Shortener.',
+  alternates: { canonical: '/about' },
+  openGraph: {
+    title: 'About Shorty',
+    description: 'Learn about the mission, architecture, and reliability of Shorty URL Shortener.',
+    url: 'https://shorty.sji.one/about',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'About Shorty',
+    description: 'Learn about the mission, architecture, and reliability of Shorty URL Shortener.',
+  },
 };
 
 export default function AboutPage() {

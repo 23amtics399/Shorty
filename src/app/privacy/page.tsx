@@ -1,6 +1,20 @@
-export const metadata = {
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
   title: 'Privacy Policy',
   description: 'Shorty Privacy Policy and Data Handling Practices.',
+  alternates: { canonical: '/privacy' },
+  openGraph: {
+    title: 'Privacy Policy',
+    description: 'Shorty Privacy Policy and Data Handling Practices.',
+    url: 'https://shorty.sji.one/privacy',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Privacy Policy',
+    description: 'Shorty Privacy Policy and Data Handling Practices.',
+  },
 };
 
 export default function PrivacyPage() {

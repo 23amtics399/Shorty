@@ -1,8 +1,13 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Link Disabled',
   description: 'This short link is currently disabled and cannot be accessed.',
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function DisabledPage() {

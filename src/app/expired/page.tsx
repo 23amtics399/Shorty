@@ -1,8 +1,13 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Link Expired',
   description: 'This short link has expired and is no longer available.',
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function ExpiredPage() {

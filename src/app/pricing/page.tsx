@@ -1,9 +1,21 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Pricing',
   description: 'Simple, transparent, 100% free URL shortening for everyone.',
   alternates: { canonical: '/pricing' },
+  openGraph: {
+    title: 'Pricing',
+    description: 'Simple, transparent, 100% free URL shortening for everyone.',
+    url: 'https://shorty.sji.one/pricing',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Pricing',
+    description: 'Simple, transparent, 100% free URL shortening for everyone.',
+  },
 };
 
 export default function PricingPage() {

@@ -1,8 +1,21 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Help & FAQ',
   description: 'Frequently asked questions and support for Shorty URL Shortener.',
+  alternates: { canonical: '/help' },
+  openGraph: {
+    title: 'Help & FAQ',
+    description: 'Frequently asked questions and support for Shorty URL Shortener.',
+    url: 'https://shorty.sji.one/help',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Help & FAQ',
+    description: 'Frequently asked questions and support for Shorty URL Shortener.',
+  },
 };
 
 export default function HelpPage() {

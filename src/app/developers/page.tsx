@@ -1,7 +1,20 @@
-export const metadata = {
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
   title: 'API Documentation',
   description: 'Shorty REST API documentation for developers.',
   alternates: { canonical: '/developers' },
+  openGraph: {
+    title: 'API Documentation',
+    description: 'Shorty REST API documentation for developers.',
+    url: 'https://shorty.sji.one/developers',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'API Documentation',
+    description: 'Shorty REST API documentation for developers.',
+  },
 };
 
 export default function DevelopersPage() {

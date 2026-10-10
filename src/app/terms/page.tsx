@@ -1,6 +1,20 @@
-export const metadata = {
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
   title: 'Terms of Service',
   description: 'Shorty Terms of Service and Acceptable Use Policy.',
+  alternates: { canonical: '/terms' },
+  openGraph: {
+    title: 'Terms of Service',
+    description: 'Shorty Terms of Service and Acceptable Use Policy.',
+    url: 'https://shorty.sji.one/terms',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Terms of Service',
+    description: 'Shorty Terms of Service and Acceptable Use Policy.',
+  },
 };
 
 export default function TermsPage() {
