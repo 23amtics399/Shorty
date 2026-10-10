@@ -12,8 +12,13 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <div
-      style={{
+    <>
+      <head>
+        <title>404 - Not Found | Shorty</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </head>
+      <div
+        style={{
         minHeight: 'calc(100vh - var(--nav-height) - 100px)',
         display: 'flex',
         alignItems: 'center',
@@ -53,5 +58,6 @@ export default function NotFound() {
         </div>
       </div>
     </div>
+  </>
   );
 }
